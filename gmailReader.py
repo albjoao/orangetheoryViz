@@ -46,18 +46,18 @@ class GmailReader():
         for mId in ids:
             rawMessage = self.getMessageById(mId)
             messages.append(self.convertMessageToText(rawMessage))
-            return messages
+        return messages
 
-    #Something is terribly wrong here :)
-    #TODO consider teh case where emails are forwarded
     def convertMessageToText(self, message):
         msg_str = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
         mime_msg = email.message_from_bytes(msg_str)
         payload = mime_msg.get_payload()
         if len(payload) > 1:
-            payload.get_payload()[1]
-        ret = payload[0].get_payload()
-        return ret[0].get_payload()
+            ret = payload[1].get_payload()
+            return ret
+        else:
+            ret = payload[0].get_payload()
+            return ret[0].get_payload()
 
 
 if __name__ == "__main__":
