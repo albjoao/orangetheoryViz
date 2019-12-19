@@ -7,10 +7,13 @@ class OrangeHTMLParser():
         self.message = message
         self._cleanRawMessage()
         self.soup = BeautifulSoup(self.message, 'html.parser')
+        self._parseTD()
+
     #Functions to Parse Document
     def _cleanRawMessage(self):
         self.message = self.message.replace('=\r\n', '')
-    def parseTD(self):
+
+    def _parseTD(self):
         self.tdStrings = []
         for td in self.soup.find_all('td'):
             if td.string:
@@ -27,6 +30,11 @@ class OrangeHTMLParser():
         titles = ['CALORIES BURNED', 'SPLAT POINTS', 'AVG. HEART-RATE', 'STEPS']
         values = [self.tdStrings[self.tdStrings.index(title)-1] for title in titles]
         return dictionify(titles, values)
+    
+    def getMetaData(self):
+        keys = ['Location', 'Date', 'Time', 'Coach']
+        values = self.tdStrings[1:5]
+        return dictionify(keys, values)
 
 
 
@@ -35,7 +43,6 @@ if __name__ == "__main__":
     messages = gmail.getUnreadMessages()
     for message in messages:
         otParser = OrangeHTMLParser(message)
-        otParser.parseTD()
-        #print(otParser.tdStrings)
-        print(otParser.getZones())
+        print(otParser.getMetaData())
         print(otParser.getWorkoutSummary())
+        print(otParser.getZones())
