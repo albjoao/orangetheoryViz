@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from gmailReader import GmailReader
-from utils import dictionify
+from utils import dictionify, dictionifyString
 
 class OrangeHTMLParser():
     def __init__(self, message):
@@ -18,7 +18,12 @@ class OrangeHTMLParser():
         for td in self.soup.find_all('td'):
             if td.string:
                 self.tdStrings.append(td.string)
-    
+
+    def getPeakHR(self):
+        for p in self.soup.find_all('p'):
+            if p.find('span') and "Peak HR" in p.getText():
+                return dictionifyString(p.getText(), ':', int)
+
     #Functions to get info we want
     #TODO still need to get treadmill data and peak heart rate
     #get name of person preforming exercise
@@ -45,6 +50,8 @@ if __name__ == "__main__":
     messages = gmail.getUnreadMessages()
     for message in messages:
         otParser = OrangeHTMLParser(message)
-        print(otParser.getMetaData())
-        print(otParser.getWorkoutSummary())
-        print(otParser.getZones())
+        print(otParser.getPeakHR())
+        # print(otParser.getMetaData())
+        # print(otParser.getWorkoutSummary())
+        # print(otParser.getZones())
+        # print('******')
