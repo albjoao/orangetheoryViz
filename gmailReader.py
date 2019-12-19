@@ -49,7 +49,7 @@ class GmailReader():
         return messages
 
     def convertMessageToText(self, message):
-        msg_str = base64.urlsafe_b64decode(message['raw'])
+        msg_str = base64.urlsafe_b64decode(message['raw'].encode('ascii'))
         mime_msg = email.message_from_bytes(msg_str)
         payload = mime_msg.get_payload()
         if len(payload) > 1:

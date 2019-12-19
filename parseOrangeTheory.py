@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from gmailReader import GmailReader
 from utils import dictionify, dictionifyString
+from collections import ChainMap
 
 class OrangeHTMLParser():
     def __init__(self, message):
@@ -39,9 +40,22 @@ class OrangeHTMLParser():
                     treadTotals[0] = float(treadTotals[0])
                     return dictionify(keys, treadTotals)
 
-    #Functions to get info we want
-    #TODO still need to get treadmill data and peak heart rate
-    #get name of person preforming exercise
+    def getTreadMillData(self):
+        keys = ['AVG. SPEED', 'MAX SPEED', 'AVG. INCLINE', 'MAX INCLINE', \
+                'AVG. PACE', 'MAX PACE', 'ELEVATION']
+        for table in self.soup.find_all('table'):
+            toExamine = table.getText()
+            if 'AVG. SPEED' in toExamine and 'ELEVATION' in toExamine:
+                for key in keys:
+                    toExamine = toExamine.replace(key, ' ')
+                toExamine = toExamine.replace('mphMax:', ' ')
+                toExamine = toExamine.replace('%Max:', ' ')
+                toExamine = toExamine.replace('%', ' ')
+                toExamine = toExamine.replace('Fastest:', ' ')
+                toExamine = toExamine.replace('feet', '')
+                toExamine = toExamine.split()
+                return dictionify(keys, toExamine)
+
     def getZones(self):
         startIndex = self.tdStrings.index('MINUTES / ZONE')
         zonesList = ['Grey', "Blue", "Green", "Orange", "Red"]
@@ -58,15 +72,19 @@ class OrangeHTMLParser():
         values = self.tdStrings[1:5]
         return dictionify(keys, values)
 
-
+    #Oh god what have I done?
+    def getWorkOut(self):
+        funcs = [x for x in dir(self) if callable(getattr(self, x)) 
+            and 'get' in x and not '__' in x and x != 'getWorkOut']
+        res = []
+        for func in funcs:
+            call = getattr(self, func)
+            res.append(call())
+        return dict(ChainMap(*res))
 
 if __name__ == "__main__":
     gmail = GmailReader()
     messages = gmail.getUnreadMessages()
     for message in messages:
         otParser = OrangeHTMLParser(message)
-        print(otParser.getTreadmillPerfomanceTotals())
-        print(otParser.getMetaData())
-        print(otParser.getWorkoutSummary())
-        print(otParser.getZones())
-        print('******')
+        print(otParser.getWorkOut())
