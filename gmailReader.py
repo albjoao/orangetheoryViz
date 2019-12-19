@@ -49,7 +49,7 @@ class GmailReader():
         return messages
 
     def convertMessageToText(self, message):
-        msg_str = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
+        msg_str = base64.urlsafe_b64decode(message['raw'])
         mime_msg = email.message_from_bytes(msg_str)
         payload = mime_msg.get_payload()
         if len(payload) > 1:
@@ -63,4 +63,3 @@ class GmailReader():
 if __name__ == "__main__":
     gmail = GmailReader()
     messages = gmail.getUnreadMessages()
-    print(messages)
