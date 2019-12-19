@@ -30,11 +30,13 @@ class GmailReader():
 
         self.service = build('gmail', 'v1', credentials=creds)
     
+    #TODO Expand out query for date, confirm its orange theory info
     def getUnreadMessageIds(self):
         response = self.service.users().messages().list(userId='me', q="label:unread").execute()
         messageIds = [x['id'] for x in response['messages']]
         return messageIds
     
+    #TODO if we get succesfully  set messages to be true
     def getMessageById(self, mId):
         return self.service.users().messages().get(userId='me', id=mId, format='raw').execute()
 
@@ -47,6 +49,7 @@ class GmailReader():
             return messages
 
     #Something is terribly wrong here :)
+    #TODO consider teh case where emails are forwarded
     def convertMessageToText(self, message):
         msg_str = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
         mime_msg = email.message_from_bytes(msg_str)

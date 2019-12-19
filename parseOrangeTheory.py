@@ -20,6 +20,8 @@ class OrangeHTMLParser():
                 self.tdStrings.append(td.string)
     
     #Functions to get info we want
+    #TODO still need to get treadmill data and peak heart rate
+    #get name of person preforming exercise
     def getZones(self):
         startIndex = self.tdStrings.index('MINUTES / ZONE')
         zonesList = ['Grey', "Blue", "Green", "Orange", "Red"]
