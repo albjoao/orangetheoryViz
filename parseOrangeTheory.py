@@ -25,7 +25,7 @@ class OrangeHTMLParser():
     
     def getWorkoutSummary(self):
         titles = ['CALORIES BURNED', 'SPLAT POINTS', 'AVG. HEART-RATE', 'STEPS']
-        values = [self.tdStrings[self.tdStrings.index(x)-1] for x in titles]
+        values = [self.tdStrings[self.tdStrings.index(title)-1] for title in titles]
         return dictionify(titles, values)
 
 
