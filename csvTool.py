@@ -7,11 +7,11 @@ class CSVTool():
         self.path = path
     def createCSV(self, columns):
         with open(self.path, 'w') as f:
-            line = '#' + ','.join(columns) + '\n'
+            line = ';'.join(columns) + '\n'
             f.write(line)
     def addLine(self, data):
         with open(self.path, 'a') as f:
-            line = ','.join( str(x) for x in data.values()) + '\n'
+            line = ';'.join( str(x) for x in data.values()) + '\n'
             f.write(self.removeUnicode(line))
     def removeUnicode(self, line):
         newLine = ''
@@ -19,6 +19,7 @@ class CSVTool():
             if char != u'\u200c':
                 newLine += char
         return newLine
+
 if __name__ == "__main__":
     test = CSVTool('test.csv')
     gmail = GmailReader()
